@@ -1,8 +1,12 @@
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../styles/colors'
 import BottomNavigation from '../../Components/Buttons/BottomNavigation'
+import LgText from '../../Components/Labels/LgText'
+import { default as Text } from '../../Components/Labels/CustomText'
+import Divider from '../../Components/Labels/Divider'
+import CartTile from '../../Components/Layout/CartTile'
 
 const Cart = ({ navigation }) => {
   return (
@@ -14,8 +18,13 @@ const Cart = ({ navigation }) => {
         width: '100%',
       }}
     >
-      <View style={{ width: '100%', padding: 5, flex: 1 }}>
-        <Text>Cart</Text>
+      <View style={{ width: '100%', padding: 10, flex: 1 }}>
+        <LgText>Shopping Cart</LgText>
+        <Text style={{ fontSize: 12 }}>2 Items</Text>
+        <View style={{ marginVertical: 10 }}>
+          <Divider />
+        </View>
+        <CartTile />
       </View>
 
       <BottomNavigation navigation={navigation} />

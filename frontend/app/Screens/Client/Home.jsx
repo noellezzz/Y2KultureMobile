@@ -21,6 +21,7 @@ import model4 from '../../../assets/images/model4.jpg'
 import model5 from '../../../assets/images/model5.jpg'
 import model6 from '../../../assets/images/model6.jpg'
 import Avatar from '../../Components/Layout/Avatar'
+import Products from '../../Data/Products'
 
 const Home = ({ navigation }) => {
   return (
@@ -130,10 +131,16 @@ const Home = ({ navigation }) => {
                 marginTop: 10,
               }}
             >
-              <ProductTile title="Black Suit" price="$4.99" image={model2} />
-              <ProductTile title="Black Trouser" price="$5.99" image={model3} />
-              <ProductTile title="White Sweater" price="$2.99" image={model4} />
-              <ProductTile title="Brown Jacket" price="$6.99" image={model5} />
+              {Products.map((product, index) => (
+                <ProductTile
+                  key={index}
+                  id={product.id}
+                  title={product.name}
+                  price={product.price}
+                  image={product.image}
+                  navigation={navigation}
+                />
+              ))}
             </View>
           </View>
         </View>

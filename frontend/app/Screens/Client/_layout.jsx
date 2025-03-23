@@ -3,6 +3,8 @@ import HomeScreen from './Home'
 import CartScreen from './Cart'
 import SearchScreen from './Search'
 import UserScreen from './User'
+
+import ProductScreen from './Products/Index'
 import BottomNavigation from '../../Components/Buttons/BottomNavigation'
 import { View } from 'react-native'
 
@@ -22,10 +24,11 @@ export default function Layout({ navigation }) {
         <Stack.Screen name="Cart" component={CartScreen} />
         <Stack.Screen name="Search" component={SearchScreen} />
         <Stack.Screen name="User" component={UserScreen} />
+        <Stack.Screen name="Product" component={ProductScreen} />
       </Stack.Navigator>
 
       {/* Add Bottom Navigation */}
-      <BottomNavigation navigation={navigation} />
+      {/* <BottomNavigation navigation={navigation} /> */}
     </View>
   )
 }

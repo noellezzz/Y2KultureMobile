@@ -6,9 +6,11 @@ import { default as Text } from '../Labels/CustomText'
 
 const screenWidth = Dimensions.get('window').width
 
-const ProductTile = ({ title, price, image }) => {
+const ProductTile = ({ title, price, image, navigation, id }) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => navigation.navigate('Product', { id: id })}
+    >
       <View
         style={{
           height: 220,
