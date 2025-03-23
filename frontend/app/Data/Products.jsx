@@ -1,164 +1,81 @@
+import model2 from '../../assets/images/model2.jpg'
+import model3 from '../../assets/images/model3.jpg'
+import model4 from '../../assets/images/model4.jpg'
+import model5 from '../../assets/images/model5.jpg'
+import model6 from '../../assets/images/model6.jpg'
+
+const additionalImages = [model4, model5, model6]
+
+const shuffleArray = array => {
+  return array.sort(() => Math.random() - 0.5)
+}
+
+const shuffledImages = shuffleArray([...additionalImages])
+
 const Products = [
   {
+    id: 1,
     name: 'Casual T-Shirt',
     description: 'Comfortable cotton t-shirt with a relaxed fit.',
     price: 19.99,
     type: 'Casual Wear',
     status: 'Active',
-    image: '',
+    image: model2,
+    reviews: [],
   },
   {
+    id: 2,
     name: 'Denim Jacket',
     description: 'Classic blue denim jacket with button closure.',
     price: 49.99,
     type: 'Casual Wear',
     status: 'Inactive',
-    image: '',
+    image: model3,
+    reviews: [],
   },
-  {
-    name: 'Athletic Joggers',
-    description: 'Slim-fit joggers made from breathable fabric.',
-    price: 34.99,
-    type: 'Sportswear',
-    status: 'Active',
-    image: '',
-  },
-  {
-    name: 'Formal Blazer',
-    description: 'Elegant blazer perfect for business and formal occasions.',
-    price: 79.99,
-    type: 'Formal Wear',
-    status: 'Active',
-    image: '',
-  },
-  {
-    name: 'Hooded Sweatshirt',
-    description: 'Soft fleece hoodie with a kangaroo pocket.',
-    price: 29.99,
-    type: 'Casual Wear',
-    status: 'Deleted',
-    image: '',
-  },
-  {
-    name: 'Running Shorts',
-    description: 'Lightweight and breathable shorts for running and workouts.',
-    price: 24.99,
-    type: 'Sportswear',
-    status: 'Active',
-    image: '',
-  },
-  {
-    name: 'Slim Fit Suit',
-    description: 'Modern slim fit suit for formal occasions.',
-    price: 149.99,
-    type: 'Formal Wear',
-    status: 'Inactive',
-    image: '',
-  },
-  {
-    name: 'Polo Shirt',
-    description: 'Classic polo shirt with a soft cotton finish.',
-    price: 39.99,
-    type: 'Casual Wear',
-    status: 'Active',
-    image: '',
-  },
-  {
-    name: 'Yoga Pants',
-    description: 'Stretchable and comfortable pants for yoga and exercise.',
-    price: 44.99,
-    type: 'Sportswear',
-    status: 'Active',
-    image: '',
-  },
-  {
-    name: 'Trench Coat',
-    description: 'Long trench coat suitable for formal and casual wear.',
-    price: 119.99,
-    type: 'Formal Wear',
-    status: 'Deleted',
-    image: '',
-  },
-  {
-    name: 'Sweatpants',
-    description: 'Cozy fleece sweatpants for lounging and casual wear.',
-    price: 34.99,
-    type: 'Casual Wear',
-    status: 'Active',
-    image: '',
-  },
-  {
-    name: 'Basketball Jersey',
-    description: 'Breathable jersey perfect for basketball and training.',
-    price: 59.99,
-    type: 'Sportswear',
-    status: 'Active',
-    image: '',
-  },
-  {
-    name: 'Classic Dress Shirt',
-    description: 'Crisp dress shirt for business and formal events.',
-    price: 54.99,
-    type: 'Formal Wear',
-    status: 'Inactive',
-    image: '',
-  },
-  {
-    name: 'Windbreaker Jacket',
-    description: 'Lightweight windbreaker for outdoor activities.',
-    price: 69.99,
-    type: 'Sportswear',
-    status: 'Active',
-    image: '',
-  },
-  {
-    name: 'Casual Jeans',
-    description: 'Classic straight-fit jeans for everyday wear.',
-    price: 49.99,
-    type: 'Casual Wear',
-    status: 'Deleted',
-    image: '',
-  },
-  {
-    name: 'Tennis Skirt',
-    description: 'Lightweight and flexible skirt for tennis and workouts.',
-    price: 39.99,
-    type: 'Sportswear',
-    status: 'Active',
-    image: '',
-  },
-  {
-    name: 'Tuxedo Jacket',
-    description: 'Premium tuxedo jacket for formal events.',
-    price: 199.99,
-    type: 'Formal Wear',
-    status: 'Active',
-    image: '',
-  },
-  {
-    name: 'Winter Parka',
-    description: 'Insulated parka designed for cold weather conditions.',
-    price: 129.99,
-    type: 'Casual Wear',
-    status: 'Inactive',
-    image: '',
-  },
-  {
-    name: 'Running Shoes',
-    description: 'High-performance running shoes for all terrains.',
-    price: 89.99,
-    type: 'Sportswear',
-    status: 'Active',
-    image: '',
-  },
-  {
-    name: 'Wedding Suit',
-    description: 'Elegant wedding suit with a tailored fit.',
-    price: 299.99,
-    type: 'Formal Wear',
-    status: 'Deleted',
-    image: '',
-  },
+  ...[
+    {
+      name: 'Athletic Joggers',
+      description: 'Slim-fit joggers made from breathable fabric.',
+      price: 34.99,
+      type: 'Sportswear',
+      status: 'Active',
+    },
+    {
+      name: 'Formal Blazer',
+      description: 'Elegant blazer perfect for business and formal occasions.',
+      price: 79.99,
+      type: 'Formal Wear',
+      status: 'Active',
+    },
+    {
+      name: 'Hooded Sweatshirt',
+      description: 'Soft fleece hoodie with a kangaroo pocket.',
+      price: 29.99,
+      type: 'Casual Wear',
+      status: 'Deleted',
+    },
+    {
+      name: 'Running Shorts',
+      description:
+        'Lightweight and breathable shorts for running and workouts.',
+      price: 24.99,
+      type: 'Sportswear',
+      status: 'Active',
+    },
+    {
+      name: 'Slim Fit Suit',
+      description: 'Modern slim fit suit for formal occasions.',
+      price: 149.99,
+      type: 'Formal Wear',
+      status: 'Inactive',
+    },
+  ].map((product, index) => ({
+    id: index + 3,
+    reviews: [],
+    ...product,
+    image: shuffledImages[index % shuffledImages.length], // Randomized images
+  })),
 ]
 
 export default Products

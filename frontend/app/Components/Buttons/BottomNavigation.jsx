@@ -51,6 +51,7 @@ const BottomNavigation = ({ navigation }) => {
           padding: 5,
           width: '90%',
           height: '90%',
+          backgroundColor: colors.primary,
         }}
       >
         {routes.map((route, index) => (
