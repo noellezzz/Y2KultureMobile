@@ -24,7 +24,11 @@ const Cart = ({ navigation }) => {
         <View style={{ marginVertical: 10 }}>
           <Divider />
         </View>
-        <CartTile />
+        <View style={{ gap: 10 }}>
+          <CartTile />
+          <CartTile />
+          <CartTile />
+        </View>
       </View>
 
       <BottomNavigation navigation={navigation} />

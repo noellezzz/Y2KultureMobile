@@ -2,7 +2,7 @@ import { TouchableOpacity } from 'react-native'
 import React from 'react'
 import { default as Text } from '../Labels/CustomText'
 
-const ItemButton = ({ text, icon }) => {
+const ItemButton = ({ text, icon, onPress }) => {
   return (
     <TouchableOpacity
       style={{
@@ -12,6 +12,7 @@ const ItemButton = ({ text, icon }) => {
         alignItems: 'center',
         gap: 20,
       }}
+      onPress={onPress}
     >
       {icon && icon}
       {text && <Text style={{ color: 'black' }}>{text}</Text>}

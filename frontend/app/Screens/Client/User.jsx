@@ -50,15 +50,23 @@ const User = ({ navigation }) => {
             <Text style={{ fontSize: 22 }}>Mark Codog</Text>
             <Text style={{ color: '#5c5c5c' }}>Standard User</Text>
           </View>
-          <View
+          <TouchableOpacity
             style={{
-              flex: 1,
-              justifyContent: 'flex-end',
+              justifyContent: 'center',
               alignItems: 'flex-end',
+              flex: 1,
             }}
+            onPress={() => navigation.navigate('EditUser')}
           >
-            <AntDesign name="edit" size={24} color="black" />
-          </View>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+              }}
+            >
+              <AntDesign name="edit" size={24} color="black" />
+            </View>
+          </TouchableOpacity>
         </View>
         <View style={{ marginVertical: 10, gap: 10 }}>
           <View style={{ flexDirection: 'row', gap: 10 }}>
@@ -127,6 +135,7 @@ const User = ({ navigation }) => {
           </View>
 
           <ItemButton
+            onPress={() => navigation.navigate('Login')}
             text="Logout"
             icon={<AntDesign name="logout" size={24} color="black" />}
           />
