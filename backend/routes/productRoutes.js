@@ -1,20 +1,11 @@
-import express from "express";
-import multer from "multer";
-import {
-  uploadProduct,
-  getProducts,
-  getProductById,
-  updateProduct,
-  deleteProduct,
-} from "../controllers/productController.js";
+const router = require("express").Router();
+const productController = require("../controllers/productController");
+const upload = require("../utils/multer");
 
-const router = express.Router();
-const upload = multer({ dest: "uploads/" });
+router.post("/", upload.single("image"), productController.createProduct);
+// router.get("/", getProducts);
+// router.get("/:id", getProductById);
+// router.put("/:id", upload.single("image"), updateProduct);
+// router.delete("/:id", deleteProduct);
 
-router.post("/", upload.single("image"), uploadProduct);
-router.get("/", getProducts);
-router.get("/:id", getProductById);
-router.put("/:id", upload.single("image"), updateProduct);
-router.delete("/:id", deleteProduct);
-
-export default router;
+module.exports = router;
