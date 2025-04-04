@@ -10,6 +10,7 @@ import './app/styles/global.css'
 import store from './app/States/store'
 import { Provider } from 'react-redux'
 import { useFonts } from 'expo-font'
+import Toast from 'react-native-toast-message'
 
 const Stack = createStackNavigator()
 
@@ -32,6 +33,7 @@ export default function App() {
           <Stack.Screen name="Welcome" component={Welcome} />
         </Stack.Navigator>
       </NavigationContainer>
+      <Toast />
     </Provider>
   )
 }

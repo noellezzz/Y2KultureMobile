@@ -1,22 +1,61 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
+const populate = require("mongoose-autopopulate");
 
-const stockSchema = new mongoose.Schema({
-  size: String,
-  color: String,
-  quantity: Number,
-});
+const productSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: String,
+      required: true,
+    },
+    image: {
+      public_id: {
+        type: String,
+        default: "Y2Kulture/DSCF4417_ktmtpv",
+      },
+      url: {
+        type: String,
+        default:
+          "https://res.cloudinary.com/dj36k3wkg/image/upload/v1743769936/DSCF4417_ktmtpv.jpg",
+      },
+    },
+    color: {
+      type: String,
+      required: true,
+    },
+    size: {
+      type: String,
+      required: true,
+    },
+    quantity: {
+      type: Number,
+      required: false,
+      default: 1,
+    },
+    rating: {
+      type: Number,
+      min: 1,
+      max: 5,
+    },
+    ratingCount: {
+      type: String,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const productSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: { type: String, required: true },
-  price: { type: Number, required: true },
-  type: { type: String, required: true },
-  status: { type: String, required: true },
-  category: { type: String, required: true },
-  image: { type: String, default: null },
-  cloudinaryId: { type: String, default: null },
-  stock: [stockSchema],
-  reviews: { type: Array, default: [] },
-});
-
-export default mongoose.model("Product", productSchema);
+productSchema.plugin(populate);
+module.exports = mongoose.model("Product", productSchema);

@@ -1,91 +1,68 @@
-import User from "../models/userModel.js";
-import admin from "../utils/firebaseConfig.js";
-import cloudinary from "../utils/cloudinary.js";
-import jwt from "jsonwebtoken";
+const User = require("../models/userModel");
+const CryptoJS = require("crypto-js");
+const jwt = require("jsonwebtoken");
 
-export const loginOrRegister = async (req, res) => {
-  try {
-    const { token, phone } = req.body;
-    console.log("Received token:", token);
-    if (!token) {
-      return res
-        .status(400)
-        .json({ message: "Token and phone number are required" });
-    }
+module.exports = {
+  createUser: async (req, res) => {
+    try {
+      const user = req.body;
 
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    const { email, picture, uid } = decodedToken;
-
-    let user = await User.findOne({ email });
-
-    if (!user) {
-      const uploadResponse = picture
-        ? await cloudinary.uploader.upload(picture, { folder: "users" })
-        : { secure_url: null, public_id: null };
-
-      user = new User({
-        email,
-        image: uploadResponse.secure_url,
-        cloudinaryId: uploadResponse.public_id,
+      const newUser = new User({
+        username: user.username,
+        email: user.email,
+        password: CryptoJS.AES.encrypt(
+          user.password,
+          process.env.SECRET
+        ).toString(),
+        phone: user.phone,
       });
 
-      await user.save();
+      await newUser.save();
+
+      res.status(201).json({ status: true });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ status: false, error: error.message });
     }
+  },
 
-    const jwtToken = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+  loginUser: async (req, res) => {
+    try {
+      const user = await User.findOne(
+        { email: req.body.email },
+        { __v: 0, updatedAt: 0, createdAt: 0 }
+      );
 
-    res.status(200).json({ user, token: jwtToken });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const updateUser = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    let updates = req.body;
-
-    let user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    if (updates.image) {
-      if (user.cloudinaryId) {
-        await cloudinary.uploader.destroy(user.cloudinaryId);
+      if (!user) {
+        return res.status(401).json({ message: "Wrong Credentials" });
       }
 
-      const uploadResponse = await cloudinary.uploader.upload(updates.image, {
-        folder: "users",
-      });
+      const decryptedPassword = CryptoJS.AES.decrypt(
+        user.password,
+        process.env.SECRET
+      );
 
-      updates.image = uploadResponse.secure_url;
-      updates.cloudinaryId = uploadResponse.public_id;
+      const decrypted = decryptedPassword.toString(CryptoJS.enc.Utf8);
+
+      if (decrypted !== req.body.password) {
+        return res.status(401).json({ message: "Wrong Password" });
+      }
+
+      const userToken = jwt.sign(
+        {
+          id: user._id,
+          userType: user.userType,
+          email: user.email,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "21d" }
+      );
+
+      console.log(userToken);
+      const { password, ...others } = user._doc;
+      return res.status(200).json({ ...others, userToken });
+    } catch (error) {
+      return res.status(500).json({ status: false, error: error.message });
     }
-
-    user = await User.findByIdAndUpdate(userId, updates, { new: true });
-
-    res.status(200).json({ message: "User updated successfully", user });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const getUserById = async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json({ user });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  },
 };

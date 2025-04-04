@@ -1,5 +1,5 @@
 import { Image, ScrollView, TextInput, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../styles/colors'
 import BottomNavigation from '../../Components/Buttons/BottomNavigation'
@@ -22,8 +22,36 @@ import model5 from '../../../assets/images/model5.jpg'
 import model6 from '../../../assets/images/model6.jpg'
 import Avatar from '../../Components/Layout/Avatar'
 import Products from '../../Data/Products'
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useFocusEffect } from '@react-navigation/native'
+import baseUrl from '../../../assets/common/baseUrl'
 
 const Home = ({ navigation }) => {
+  const [user, setUser] = useState({})
+
+  const getUser = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const config = {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      }
+
+      const response = await axios.get(`${baseUrl}/user/profile`, config)
+      setUser(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getUser()
+    }, []),
+  )
+
   return (
     <SafeAreaView
       style={{
@@ -44,9 +72,9 @@ const Home = ({ navigation }) => {
               height: 60,
             }}
           >
-            <Avatar image={hanni} />
+            <Avatar image={{ uri: user ? user?.image?.url : hanni }} />
             <View>
-              <Text>Hi, Mark,</Text>
+              <Text>{user?.username}</Text>
               <Text>Welcome Back!</Text>
             </View>
           </View>

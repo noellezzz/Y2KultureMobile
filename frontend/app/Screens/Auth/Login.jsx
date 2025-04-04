@@ -9,10 +9,47 @@ import { default as Text } from '../../Components/Labels/CustomText'
 import PrimeButton from '../../Components/Buttons/PrimeButton'
 import Divider from '../../Components/Labels/Divider'
 import AntDesign from '@expo/vector-icons/AntDesign'
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import baseUrl from '../../../assets/common/baseUrl'
+import Toast from 'react-native-toast-message'
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
+  const login = async () => {
+    try {
+      const response = await axios.post(`${baseUrl}/login`, { email, password })
+      if (response.status === 200) {
+        await AsyncStorage.setItem('id', JSON.stringify(response.data._id))
+        await AsyncStorage.setItem(
+          'token',
+          JSON.stringify(response.data.userToken),
+        )
+
+        navigation.navigate('ClientStack')
+        Toast.show({
+          type: 'success',
+          text1: 'Login Successful',
+          text2: 'Welcome back!',
+        })
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid Credentials',
+          text2: 'Please try again',
+        })
+      }
+    } catch (error) {
+      console.log(error)
+      Toast.show({
+        type: 'error',
+        text1: 'Invalid Credentials',
+        text2: 'Please try again',
+      })
+    }
+  }
 
   return (
     <View style={{ backgroundColor: colors.primary, flex: 1, padding: 10 }}>
@@ -54,10 +91,7 @@ const Login = ({ navigation }) => {
             gap: 10,
           }}
         >
-          <PrimeButton
-            text="Login"
-            onPress={() => navigation.navigate('ClientStack')}
-          />
+          <PrimeButton text="Login" onPress={login} />
           <PrimeButton
             styles={{ backgroundColor: 'white' }}
             text="Register"

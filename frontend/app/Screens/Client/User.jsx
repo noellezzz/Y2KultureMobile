@@ -12,14 +12,41 @@ import Octicons from '@expo/vector-icons/Octicons'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import Divider from '../../Components/Labels/Divider'
 import mockUser from '../../Data/UserInfo'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useFocusEffect } from '@react-navigation/native'
+import axios from 'axios'
+import baseUrl from '../../../assets/common/baseUrl'
 
 const User = ({ navigation }) => {
-  const [user, setUser] = useState({
-    name: '',
-    role: '',
-    phone: '',
-    email: '',
-  })
+  const [user, setUser] = useState({})
+
+  const getUser = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const config = {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      }
+
+      const response = await axios.get(`${baseUrl}/user/profile`, config)
+      setUser(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getUser()
+    }, []),
+  )
+
+  const logout = async () => {
+    await AsyncStorage.removeItem('id')
+    await AsyncStorage.removeItem('token')
+    navigation.navigate('AuthNavigation', { screen: 'Login' })
+  }
 
   useEffect(() => {
     setUser(mockUser)
@@ -54,13 +81,15 @@ const User = ({ navigation }) => {
             }}
           >
             <Image
-              source={hanni}
+              source={{ uri: user?.image?.url }}
               style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
             />
           </View>
           <View>
-            <Text style={{ fontSize: 22 }}>{user?.name || 'No Name'}</Text>
-            <Text style={{ color: '#5c5c5c' }}>{user?.role}</Text>
+            <Text style={{ fontSize: 22 }}>{user?.username || 'No Name'}</Text>
+            <Text style={{ color: '#5c5c5c' }}>
+              {user?.role === 'user' ? 'Customer' : 'Admin'}
+            </Text>
           </View>
           <TouchableOpacity
             style={{
@@ -90,7 +119,7 @@ const User = ({ navigation }) => {
             <Text>{user?.email}</Text>
           </View>
         </View>
-        <View
+        {/* <View
           style={{
             borderTopWidth: 1,
             borderBottomWidth: 1,
@@ -124,7 +153,7 @@ const User = ({ navigation }) => {
             <Text style={{ fontSize: 18 }}>{user?.orders?.length}</Text>
             <Text style={{ fontSize: 12 }}>Orders</Text>
           </View>
-        </View>
+        </View> */}
         <View>
           <ItemButton
             icon={<AntDesign name="hearto" size={24} color="black" />}
@@ -150,7 +179,7 @@ const User = ({ navigation }) => {
           </View>
 
           <ItemButton
-            onPress={() => navigation.navigate('Login')}
+            onPress={logout}
             text="Logout"
             icon={<AntDesign name="logout" size={24} color="black" />}
           />

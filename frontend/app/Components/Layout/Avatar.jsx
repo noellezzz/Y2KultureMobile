@@ -14,7 +14,12 @@ const Avatar = ({ image }) => {
     >
       <Image
         source={image}
-        style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
+        style={{
+          width: '100%',
+          height: '100%',
+          resizeMode: 'contain',
+          objectFit: 'cover',
+        }}
       />
     </View>
   )
