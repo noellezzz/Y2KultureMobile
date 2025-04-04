@@ -1,5 +1,5 @@
 import { Image, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../styles/colors'
 import BottomNavigation from '../../Components/Buttons/BottomNavigation'
@@ -11,8 +11,20 @@ import ItemButton from '../../Components/Buttons/ItemButton'
 import Octicons from '@expo/vector-icons/Octicons'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import Divider from '../../Components/Labels/Divider'
+import mockUser from '../../Data/UserInfo'
 
 const User = ({ navigation }) => {
+  const [user, setUser] = useState({
+    name: '',
+    role: '',
+    phone: '',
+    email: '',
+  })
+
+  useEffect(() => {
+    setUser(mockUser)
+  }, [])
+
   return (
     <SafeAreaView
       style={{
@@ -47,27 +59,35 @@ const User = ({ navigation }) => {
             />
           </View>
           <View>
-            <Text style={{ fontSize: 22 }}>Mark Codog</Text>
-            <Text style={{ color: '#5c5c5c' }}>Standard User</Text>
+            <Text style={{ fontSize: 22 }}>{user?.name || 'No Name'}</Text>
+            <Text style={{ color: '#5c5c5c' }}>{user?.role}</Text>
           </View>
-          <View
+          <TouchableOpacity
             style={{
-              flex: 1,
-              justifyContent: 'flex-end',
+              justifyContent: 'center',
               alignItems: 'flex-end',
+              flex: 1,
             }}
+            onPress={() => navigation.navigate('EditUser')}
           >
-            <AntDesign name="edit" size={24} color="black" />
-          </View>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+              }}
+            >
+              <AntDesign name="edit" size={24} color="black" />
+            </View>
+          </TouchableOpacity>
         </View>
         <View style={{ marginVertical: 10, gap: 10 }}>
           <View style={{ flexDirection: 'row', gap: 10 }}>
             <AntDesign name="phone" size={18} color="black" />
-            <Text>+123456789</Text>
+            <Text>{user?.phone}</Text>
           </View>
           <View style={{ flexDirection: 'row', gap: 10 }}>
             <Entypo name="email" size={18} color="black" />
-            <Text>sample@gmail.com</Text>
+            <Text>{user?.email}</Text>
           </View>
         </View>
         <View
@@ -88,7 +108,9 @@ const User = ({ navigation }) => {
               alignItems: 'center',
             }}
           >
-            <Text style={{ fontSize: 18 }}>$140.00</Text>
+            <Text style={{ fontSize: 18 }}>
+              ${user?.wallet ? user.wallet.toFixed(2) : '0.00'}
+            </Text>
             <Text style={{ fontSize: 12 }}>Wallet</Text>
           </View>
           <View
@@ -99,7 +121,7 @@ const User = ({ navigation }) => {
               alignItems: 'center',
             }}
           >
-            <Text style={{ fontSize: 18 }}>12</Text>
+            <Text style={{ fontSize: 18 }}>{user?.orders?.length}</Text>
             <Text style={{ fontSize: 12 }}>Orders</Text>
           </View>
         </View>
@@ -109,6 +131,7 @@ const User = ({ navigation }) => {
             text="Your Favorites"
           />
           <ItemButton
+            onPress={() => navigation.navigate('Orders')}
             text="Your Orders"
             icon={<AntDesign name="shoppingcart" size={24} color="black" />}
           />
@@ -127,6 +150,7 @@ const User = ({ navigation }) => {
           </View>
 
           <ItemButton
+            onPress={() => navigation.navigate('Login')}
             text="Logout"
             icon={<AntDesign name="logout" size={24} color="black" />}
           />

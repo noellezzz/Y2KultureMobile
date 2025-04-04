@@ -1,5 +1,10 @@
-import { Image, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import {
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native'
+import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { default as Text } from '../../../Components/Labels/CustomText'
 import colors from '../../../styles/colors'
@@ -13,6 +18,9 @@ import PrimeButton from '../../../Components/Buttons/PrimeButton'
 const Index = ({ route, navigation }) => {
   const { id } = route.params || {}
   const product = Products.find(product => product.id === id)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedSize, setSelectedSize] = useState(null)
+  const [selectedColor, setSelectedColor] = useState(null)
 
   return (
     <SafeAreaView
@@ -24,7 +32,7 @@ const Index = ({ route, navigation }) => {
         padding: 10,
       }}
     >
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+      <View>
         <View
           style={{
             flexDirection: 'row',
@@ -32,16 +40,20 @@ const Index = ({ route, navigation }) => {
             justifyContent: 'space-between',
           }}
         >
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <AntDesign name="arrowleft" size={24} color="black" />
-            <LgText>Products</LgText>
-          </View>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <View
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}
+            >
+              <AntDesign name="arrowleft" size={24} color="black" />
+              <LgText>Products</LgText>
+            </View>
+          </TouchableOpacity>
           <View style={{ flexDirection: 'row', gap: 10, paddingRight: 10 }}>
             <Ionicons name="bag-handle-outline" size={24} color="black" />
             <AntDesign name="hearto" size={24} color="black" />
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
       <View style={{ marginVertical: 10, position: 'relative' }}>
         <Image
           source={product.image}
@@ -96,7 +108,15 @@ const Index = ({ route, navigation }) => {
             }}
           >
             <AntDesign name="star" size={14} color={colors.quaternary} />
-            <Text style={{ fontSize: 12 }}>3.9 | 39</Text>
+            <Text style={{ fontSize: 12 }}>
+              {product.reviews.length > 0
+                ? (
+                    product.reviews.reduce((sum, review) => sum + review, 0) /
+                    product.reviews.length
+                  ).toFixed(1)
+                : 'No Reviews'}
+              | {product.reviews.length}
+            </Text>
           </View>
         </View>
       </View>
@@ -143,7 +163,6 @@ const Index = ({ route, navigation }) => {
       <View
         style={{
           position: 'absolute',
-
           width: '100%',
           height: 80,
           bottom: 0,
@@ -156,11 +175,112 @@ const Index = ({ route, navigation }) => {
       >
         <PrimeButton text="Buy Now" />
         <PrimeButton
+          onPress={() => setModalOpen(true)}
           text="Add To Cart"
-          icon={<Ionicons name="bag-handle-outline" size={24} color="black" />}
+          icon={<Ionicons name="bag-handle-outline" size={16} color="black" />}
           styles={{ backgroundColor: 'white' }}
         />
       </View>
+      {modalOpen && (
+        <View
+          style={{
+            position: 'absolute',
+            zIndex: 100,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            borderWidth: 1,
+            left: 0,
+            top: 0,
+            flex: 1,
+            width: '105%',
+            height: '120%',
+          }}
+        >
+          <TouchableWithoutFeedback onPress={() => setModalOpen(false)}>
+            <View
+              style={{
+                borderWidth: 1,
+                flexGrow: 1,
+                width: '100%',
+                zIndex: 100,
+              }}
+            ></View>
+          </TouchableWithoutFeedback>
+          <View
+            style={{
+              width: '100%',
+              height: 300,
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              backgroundColor: 'white',
+              padding: 10,
+              zIndex: 101,
+            }}
+          >
+            <LgText text="Add to Cart?" />
+            <View style={{ flexDirection: 'row', gap: 10, marginVertical: 10 }}>
+              {product.stock.map((stock, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => setSelectedSize(stock.size)}
+                >
+                  <View
+                    style={{
+                      backgroundColor:
+                        selectedSize === stock.size
+                          ? colors.quaternary
+                          : 'white',
+                      padding: 10,
+                      paddingHorizontal: 20,
+                      borderWidth: 1,
+                      borderRadius: 10,
+                    }}
+                  >
+                    <Text>{stock.size}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 10 }}>
+              {product.stock.map((stock, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => setSelectedColor(stock.color)}
+                >
+                  <View
+                    style={{
+                      backgroundColor:
+                        selectedColor === stock.color
+                          ? colors.quaternary
+                          : 'white',
+                      padding: 10,
+                      paddingHorizontal: 20,
+                      borderWidth: 1,
+                      borderRadius: 10,
+                    }}
+                  >
+                    <Text>{stock.color}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <PrimeButton
+                text="Yes"
+                onPress={() => {
+                  setModalOpen(false)
+                  navigation.navigate('Cart')
+                }}
+              />
+              <PrimeButton
+                styles={{ backgroundColor: 'white' }}
+                text="No"
+                onPress={() => setModalOpen(false)}
+              />
+            </View>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   )
 }

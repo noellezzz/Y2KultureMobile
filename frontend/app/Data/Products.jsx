@@ -22,6 +22,23 @@ const Products = [
     status: 'Active',
     image: model2,
     reviews: [],
+    stock: [
+      {
+        size: 'S',
+        color: 'white',
+        quantity: 10,
+      },
+      {
+        size: 'M',
+        color: 'black',
+        quantity: 20,
+      },
+      {
+        size: 'L',
+        color: 'orange',
+        quantity: 30,
+      },
+    ],
   },
   {
     id: 2,
@@ -32,6 +49,23 @@ const Products = [
     status: 'Inactive',
     image: model3,
     reviews: [],
+    stock: [
+      {
+        size: 'S',
+        color: 'white',
+        quantity: 10,
+      },
+      {
+        size: 'M',
+        color: 'orange',
+        quantity: 20,
+      },
+      {
+        size: 'L',
+        color: 'black',
+        quantity: 30,
+      },
+    ],
   },
   ...[
     {
@@ -73,6 +107,23 @@ const Products = [
   ].map((product, index) => ({
     id: index + 3,
     reviews: [],
+    stock: [
+      {
+        size: 'S',
+        color: 'white',
+        quantity: 10,
+      },
+      {
+        size: 'M',
+        color: 'orange',
+        quantity: 20,
+      },
+      {
+        size: 'L',
+        color: 'black',
+        quantity: 30,
+      },
+    ],
     ...product,
     image: shuffledImages[index % shuffledImages.length], // Randomized images
   })),
