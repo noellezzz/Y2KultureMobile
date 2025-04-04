@@ -9,12 +9,39 @@ import hanni from '../../../../assets/images/hanni.jpg'
 import Feather from '@expo/vector-icons/Feather'
 import InputField from '../../../Components/Input/InputField'
 import PrimeButton from '../../../Components/Buttons/PrimeButton'
+import { useFocusEffect } from '@react-navigation/native'
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import baseUrl from '../../../../assets/common/baseUrl'
 
 const Edit = ({ navigation }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
+  const [username, setUsername] = useState('')
   const [phone, setPhone] = useState('')
+  const [user, setUser] = useState({})
+
+  const getUser = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const config = {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      }
+
+      const response = await axios.get(`${baseUrl}/user/profile`, config)
+      setUser(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getUser()
+    }, []),
+  )
 
   return (
     <SafeAreaView
@@ -48,10 +75,17 @@ const Edit = ({ navigation }) => {
           }}
         >
           <View style={{ borderRadius: '100%', overflow: 'hidden' }}>
-            <Image
-              style={{ height: '100%', width: '100%', resizeMode: 'cover' }}
-              source={hanni}
-            />
+            {user ? (
+              <Image
+                style={{ height: '100%', width: '100%', resizeMode: 'cover' }}
+                source={{ uri: user?.image?.url }}
+              />
+            ) : (
+              <Image
+                style={{ height: '100%', width: '100%', resizeMode: 'cover' }}
+                source={hanni}
+              />
+            )}
           </View>
           <TouchableOpacity>
             <View
@@ -77,32 +111,19 @@ const Edit = ({ navigation }) => {
       <View style={{ marginVertical: 10, gap: 20 }}>
         <InputField
           label="Email"
-          value={email}
+          value={user?.email}
           onChangeText={setEmail}
           keyboardType="default"
-        />
-        <InputField
-          label="Password"
-          value={password}
-          onChangeText={setPassword}
-          keyboardType="default"
-          secureEntry={true}
         />
         <InputField
           label="Username"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="default"
-        />
-        <InputField
-          label="Email"
-          value={name}
-          onChangeText={setName}
+          value={user?.username}
+          onChangeText={setUsername}
           keyboardType="default"
         />
         <InputField
           label="Phone"
-          value={phone}
+          value={user?.phone}
           onChangeText={setPhone}
           keyboardType="numeric"
         />
