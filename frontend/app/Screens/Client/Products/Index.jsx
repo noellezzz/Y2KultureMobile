@@ -14,12 +14,52 @@ import LgText from '../../../Components/Labels/LgText'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import PrimeButton from '../../../Components/Buttons/PrimeButton'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import baseUrl from '../../../../assets/common/baseUrl'
+import axios from 'axios'
+import Toast from 'react-native-toast-message'
 
 const Index = ({ route, navigation }) => {
   const { item } = route.params || {}
   const [modalOpen, setModalOpen] = useState(false)
-  const [selectedSize, setSelectedSize] = useState(null)
-  const [selectedColor, setSelectedColor] = useState(null)
+  // const [selectedSize, setSelectedSize] = useState(null)
+  // const [selectedColor, setSelectedColor] = useState(null)
+
+  const addProductToCart = async () => {
+    const cartItem = {
+      productId: item?._id,
+      quantity: 1,
+      totalPrice: Number(item?.price),
+    }
+    try {
+      const token = await AsyncStorage.getItem('token')
+      console.log(token)
+      if (token) {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(token)}`,
+          },
+        }
+
+        await axios.post(`${baseUrl}/cart/`, cartItem, config)
+        navigation.navigate('Cart')
+        setModalOpen(false)
+        Toast.show({
+          type: 'success',
+          text1: 'Success ✅',
+          text2: 'Food has been added to your cart 🛒',
+        })
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Error ❌',
+          text2: 'Please login to add items to your cart',
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <SafeAreaView
@@ -265,13 +305,7 @@ const Index = ({ route, navigation }) => {
               ))} */}
             </View>
             <View style={{ flexDirection: 'row', gap: 10 }}>
-              <PrimeButton
-                text="Yes"
-                onPress={() => {
-                  setModalOpen(false)
-                  navigation.navigate('Cart')
-                }}
-              />
+              <PrimeButton text="Yes" onPress={addProductToCart} />
               <PrimeButton
                 styles={{ backgroundColor: 'white' }}
                 text="No"

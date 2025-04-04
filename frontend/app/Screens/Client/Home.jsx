@@ -119,7 +119,7 @@ const Home = ({ navigation }) => {
             </View>
             <View style={{ marginVertical: 3, flexDirection: 'row', gap: 5 }}>
               <IconButton
-                text="Casual"
+                text="Sports"
                 color={colors.senary}
                 icon={
                   <MaterialIcons
