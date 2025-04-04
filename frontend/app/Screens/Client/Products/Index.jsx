@@ -16,8 +16,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import PrimeButton from '../../../Components/Buttons/PrimeButton'
 
 const Index = ({ route, navigation }) => {
-  const { id } = route.params || {}
-  const product = Products.find(product => product.id === id)
+  const { item } = route.params || {}
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedSize, setSelectedSize] = useState(null)
   const [selectedColor, setSelectedColor] = useState(null)
@@ -56,11 +55,12 @@ const Index = ({ route, navigation }) => {
       </View>
       <View style={{ marginVertical: 10, position: 'relative' }}>
         <Image
-          source={product.image}
+          source={{ uri: item?.image?.url }}
           style={{
             width: '100%',
             height: 400,
             resizeMode: 'cover',
+            objectFit: 'cover',
             borderRadius: 20,
             borderWidth: 2,
           }}
@@ -108,7 +108,7 @@ const Index = ({ route, navigation }) => {
             }}
           >
             <AntDesign name="star" size={14} color={colors.quaternary} />
-            <Text style={{ fontSize: 12 }}>
+            {/* <Text style={{ fontSize: 12 }}>
               {product.reviews.length > 0
                 ? (
                     product.reviews.reduce((sum, review) => sum + review, 0) /
@@ -116,20 +116,20 @@ const Index = ({ route, navigation }) => {
                   ).toFixed(1)
                 : 'No Reviews'}
               | {product.reviews.length}
-            </Text>
+            </Text> */}
           </View>
         </View>
       </View>
       <View>
-        <Text style={{ fontSize: 24 }}>{product.name}</Text>
-        <Text style={{ fontSize: 16 }}>{product.price}</Text>
+        <Text style={{ fontSize: 24 }}>{item?.title}</Text>
+        <Text style={{ fontSize: 16 }}>₱{Number(item?.price).toFixed(2)}</Text>
         <View style={{ marginVertical: 10 }}>
           <Text>Description</Text>
-          <Text style={{ fontSize: 16 }}>{product.description}</Text>
+          <Text style={{ fontSize: 16 }}>{item?.description}</Text>
         </View>
         <View style={{ marginVertical: 10, minHeight: 200 }}>
           <Text>Reviews</Text>
-          {product.reviews.length === 0 && (
+          {/* {product.reviews.length === 0 && (
             <View
               style={{
                 flex: 1,
@@ -157,7 +157,7 @@ const Index = ({ route, navigation }) => {
                 </View>
               ))}
             </View>
-          )}
+          )} */}
         </View>
       </View>
       <View
@@ -219,7 +219,7 @@ const Index = ({ route, navigation }) => {
           >
             <LgText text="Add to Cart?" />
             <View style={{ flexDirection: 'row', gap: 10, marginVertical: 10 }}>
-              {product.stock.map((stock, index) => (
+              {/* {product.stock.map((stock, index) => (
                 <TouchableOpacity
                   key={index}
                   onPress={() => setSelectedSize(stock.size)}
@@ -239,10 +239,10 @@ const Index = ({ route, navigation }) => {
                     <Text>{stock.size}</Text>
                   </View>
                 </TouchableOpacity>
-              ))}
+              ))} */}
             </View>
             <View style={{ flexDirection: 'row', gap: 10, marginBottom: 10 }}>
-              {product.stock.map((stock, index) => (
+              {/* {product.stock.map((stock, index) => (
                 <TouchableOpacity
                   key={index}
                   onPress={() => setSelectedColor(stock.color)}
@@ -262,7 +262,7 @@ const Index = ({ route, navigation }) => {
                     <Text>{stock.color}</Text>
                   </View>
                 </TouchableOpacity>
-              ))}
+              ))} */}
             </View>
             <View style={{ flexDirection: 'row', gap: 10 }}>
               <PrimeButton

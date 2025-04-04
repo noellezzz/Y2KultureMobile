@@ -1,4 +1,4 @@
-import { Image, ScrollView, TextInput, View } from 'react-native'
+import { FlatList, Image, ScrollView, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../styles/colors'
@@ -29,6 +29,7 @@ import baseUrl from '../../../assets/common/baseUrl'
 
 const Home = ({ navigation }) => {
   const [user, setUser] = useState({})
+  const [products, setProducts] = useState([])
 
   const getUser = async () => {
     try {
@@ -46,11 +47,23 @@ const Home = ({ navigation }) => {
     }
   }
 
+  const getAllProducts = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/product/`)
+      setProducts(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useFocusEffect(
     React.useCallback(() => {
       getUser()
+      getAllProducts()
     }, []),
   )
+
+  // console.log('Products:', products)
 
   return (
     <SafeAreaView
@@ -125,29 +138,21 @@ const Home = ({ navigation }) => {
           </View>
           <View style={{ marginVertical: 5 }}>
             <SectionTitle text="Collections" />
-            <ScrollView
-              style={{ paddingTop: 5, paddingBottom: 15, paddingHorizontal: 5 }}
+            <FlatList
+              data={products}
+              renderItem={({ item }) => (
+                <LgTile
+                  text={item?.title}
+                  category={item?.category}
+                  image={{ uri: item?.image?.url }}
+                  newItem={true}
+                />
+              )}
+              keyExtractor={item => item._id}
               horizontal={true}
-            >
-              <LgTile
-                text="Collection Series"
-                category="Formal Wear"
-                image={model5}
-                newItem={true}
-              />
-              <LgTile
-                text="Collection Series"
-                category="Casual Wear"
-                image={model6}
-                best={true}
-              />
-              <LgTile
-                text="Collection Series"
-                category="Sports Wear"
-                image={model4}
-                sale={true}
-              />
-            </ScrollView>
+              showsHorizontalScrollIndicator={false}
+              style={{ paddingTop: 5, paddingBottom: 15, paddingHorizontal: 5 }}
+            />
           </View>
           <View>
             <SectionTitle text="Top Seller's" />
@@ -157,18 +162,22 @@ const Home = ({ navigation }) => {
                 flexDirection: 'row',
                 gap: 10,
                 marginTop: 10,
+                marginBottom: 70,
               }}
             >
-              {Products.map((product, index) => (
-                <ProductTile
-                  key={index}
-                  id={product.id}
-                  title={product.name}
-                  price={product.price}
-                  image={product.image}
-                  navigation={navigation}
-                />
-              ))}
+              <FlatList
+                data={products}
+                keyExtractor={item => item._id}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  alignItems: 'center',
+                }}
+                numColumns={2}
+                key={2}
+                renderItem={({ item }) => (
+                  <ProductTile item={item} navigation={navigation} />
+                )}
+              />
             </View>
           </View>
         </View>

@@ -6,15 +6,14 @@ import { default as Text } from '../Labels/CustomText'
 
 const screenWidth = Dimensions.get('window').width
 
-const ProductTile = ({ title, price, image, navigation, id }) => {
+const ProductTile = ({ item, navigation }) => {
   return (
-    <TouchableOpacity
-      onPress={() => navigation.navigate('Product', { id: id })}
-    >
+    <TouchableOpacity onPress={() => navigation.navigate('Product', { item })}>
       <View
         style={{
           height: 220,
           width: screenWidth * 0.5 - 20,
+          margin: 5,
         }}
       >
         <View
@@ -40,13 +39,15 @@ const ProductTile = ({ title, price, image, navigation, id }) => {
             <Feather name="heart" size={20} color="white" />
           </View>
           <Image
-            source={image}
+            source={{ uri: item?.image?.url }}
             style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
           />
         </View>
         <View style={{ padding: 5 }}>
-          <Text style={{ fontSize: 16 }}>{title}</Text>
-          <Text style={{ fontSize: 12 }}>{price}</Text>
+          <Text style={{ fontSize: 16 }}>{item?.title}</Text>
+          <Text style={{ fontSize: 12 }}>
+            ₱{Number(item?.price).toFixed(2)}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
