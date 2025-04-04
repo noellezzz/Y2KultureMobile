@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useFocusEffect } from '@react-navigation/native'
 import axios from 'axios'
 import baseUrl from '../../../assets/common/baseUrl'
+import Toast from 'react-native-toast-message'
 
 const User = ({ navigation }) => {
   const [user, setUser] = useState({})
@@ -46,6 +47,11 @@ const User = ({ navigation }) => {
     await AsyncStorage.removeItem('id')
     await AsyncStorage.removeItem('token')
     navigation.navigate('AuthNavigation', { screen: 'Login' })
+    Toast.show({
+      type: 'success',
+      text1: 'Logout Successful',
+      text2: 'See you soon!',
+    })
   }
 
   useEffect(() => {
