@@ -1,5 +1,5 @@
-import { FlatList, Image, ScrollView, TextInput, View } from 'react-native'
-import React, { useState } from 'react'
+import { FlatList, Image, ScrollView, DrawerLayoutAndroid, View, TouchableOpacity } from 'react-native'
+import React, { useState, useRef } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../styles/colors'
 import BottomNavigation from '../../Components/Buttons/BottomNavigation'
@@ -27,6 +27,7 @@ const Home = ({ navigation }) => {
   const [products, setProducts] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('')
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 })
+  const drawerRef = useRef(null)
 
   const getUser = async () => {
     try {
@@ -53,6 +54,17 @@ const Home = ({ navigation }) => {
     }
   }
 
+  const logout = async () => {
+    await AsyncStorage.removeItem('id')
+    await AsyncStorage.removeItem('token')
+    navigation.navigate('AuthNavigation', { screen: 'Login' })
+    Toast.show({
+      type: 'success',
+      text1: 'Logout Successful',
+      text2: 'See you soon!',
+    })
+  }
+
   useFocusEffect(
     React.useCallback(() => {
       getUser()
@@ -66,7 +78,47 @@ const Home = ({ navigation }) => {
     return filterCategory && filterPrice
   })
 
+  const renderDrawerContent = () => (
+    <View style={{ flex: 1, padding: 20, backgroundColor: colors.primary }}>
+      <View style={{ alignItems: 'center', marginTop: 40 }}>
+        <Avatar image={{ uri: user ? user?.image?.url : hanni }} size={80} />
+        <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 10 }}>{user?.username}</Text>
+        <Text style={{ fontSize: 14 }}>Hello!</Text>
+      </View>
+  
+      <View style={{ marginVertical: 10 }}>
+        <SectionTitle text="Navigation" />
+        <View style={{ flexDirection: 'column', alignItems: 'left', marginVertical: 10, gap: 10}}>
+          <IconButton
+            text="Cart"
+            color={colors.secondary}
+            onPress={() => navigation.navigate('Cart')}
+            icon={<Ionicons name="cart" size={18} color="black" />}
+          />
+          <IconButton
+            text="Profile"
+            color={colors.secondary}
+            onPress={() => navigation.navigate('User')}
+            icon={<FontAwesome5 name="user" size={18} color="black" />}
+          />
+          <IconButton
+            onPress={logout}
+            text="Logout"
+            icon={<AntDesign name="logout" size={18} color="black" />}
+            />
+        </View>
+      </View>
+    </View>
+  )
+
   return (
+
+    <DrawerLayoutAndroid
+    ref={drawerRef}
+    drawerWidth={300}
+    drawerPosition="left"
+    renderNavigationView={renderDrawerContent}
+  >
     <SafeAreaView
       style={{
         position: 'relative',
@@ -86,8 +138,9 @@ const Home = ({ navigation }) => {
               height: 60,
             }}
           >
-            <Avatar image={{ uri: user ? user?.image?.url : hanni }} />
-            <View>
+              <TouchableOpacity onPress={() => drawerRef.current.openDrawer()}>
+                <Avatar image={{ uri: user ? user?.image?.url : hanni }} />
+              </TouchableOpacity>            <View>
               <Text>{user?.username}</Text>
               <Text>Welcome Back!</Text>
             </View>
@@ -216,6 +269,8 @@ const Home = ({ navigation }) => {
       </ScrollView>
       <BottomNavigation navigation={navigation} />
     </SafeAreaView>
+    </DrawerLayoutAndroid>
+
   )
 }
 
