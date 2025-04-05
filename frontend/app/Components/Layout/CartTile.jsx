@@ -6,8 +6,29 @@ import AntDesign from '@expo/vector-icons/AntDesign'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import baseUrl from '../../../assets/common/baseUrl'
+import FontAwesome from '@expo/vector-icons/FontAwesome'
+import Toast from 'react-native-toast-message'
+import { useFocusEffect } from '@react-navigation/native'
 
 const CartTile = ({ item, getCartItems }) => {
+  const [user, setUser] = React.useState({})
+
+  const getUser = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const config = {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      }
+
+      const response = await axios.get(`${baseUrl}/user/profile`, config)
+      setUser(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const increment = async productId => {
     try {
       const token = await AsyncStorage.getItem('token')
@@ -39,6 +60,36 @@ const CartTile = ({ item, getCartItems }) => {
       console.log(error)
     }
   }
+
+  const removeItem = async productId => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      }
+      await axios.delete(
+        `${baseUrl}/cart/remove-product?userId=${user._id}&productId=${productId}`,
+        config,
+      )
+      Toast.show({
+        type: 'success',
+        text1: 'Success ✅',
+        text2: 'Product has been removed from your cart 🛒',
+      })
+      getCartItems()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getUser()
+    }, []),
+  )
 
   return (
     <View
@@ -84,9 +135,15 @@ const CartTile = ({ item, getCartItems }) => {
               <Ionicons name="add" size={16} color="black" />
             </TouchableOpacity>
             <Text>{item?.quantity}</Text>
-            <TouchableOpacity onPress={() => decrement(item?.productId._id)}>
-              <AntDesign name="minus" size={16} color="black" />
-            </TouchableOpacity>
+            {item?.quantity === 1 ? (
+              <TouchableOpacity onPress={() => removeItem(item?.productId._id)}>
+                <FontAwesome name="trash-o" size={16} color="black" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={() => decrement(item?.productId._id)}>
+                <AntDesign name="minus" size={16} color="black" />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>

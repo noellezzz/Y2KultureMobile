@@ -14,5 +14,10 @@ router.patch(
   verifyToken,
   cartController.decrementCartItemQuantity
 );
+router.delete(
+  "/remove-product",
+  verifyToken,
+  cartController.removeProductFromCart
+);
 
 module.exports = router;

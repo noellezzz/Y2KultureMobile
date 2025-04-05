@@ -47,7 +47,7 @@ const Index = ({ route, navigation }) => {
         Toast.show({
           type: 'success',
           text1: 'Success ✅',
-          text2: 'Food has been added to your cart 🛒',
+          text2: 'Product has been added to your cart 🛒',
         })
       } else {
         Toast.show({

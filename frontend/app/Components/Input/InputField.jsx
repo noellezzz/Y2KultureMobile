@@ -10,6 +10,7 @@ const InputField = ({
   label = 'Name',
   keyboardType,
   secureEntry = false,
+  placeholder,
 }) => {
   return (
     <View style={{ position: 'relative' }}>
@@ -37,6 +38,8 @@ const InputField = ({
         onChangeText={onChangeText}
         keyboardType={keyboardType}
         secureTextEntry={secureEntry}
+        placeholder={placeholder}
+        placeholderTextColor={colors.black}
       />
       {errors && errors.productName && <Text text={errors.productName} />}
     </View>

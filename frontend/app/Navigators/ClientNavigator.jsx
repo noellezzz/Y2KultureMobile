@@ -8,6 +8,7 @@ import Home from '../Screens/Client/Home'
 import Product from '../Screens/Client/Products/Index'
 import EditUser from '../Screens/Client/Profile/Edit'
 import Orders from '../Screens/Client/Profile/Orders'
+import Checkout from '../Screens/Client/Checkout'
 
 const Stack = createStackNavigator()
 
@@ -20,6 +21,7 @@ export default function ClientNavigator() {
       <Stack.Screen name="Layout" component={LayoutScreen} />
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Cart" component={Cart} />
+      <Stack.Screen name="Checkout" component={Checkout} />
       <Stack.Screen name="Search" component={Search} />
       <Stack.Screen name="User" component={User} />
       <Stack.Screen name="Product" component={Product} />
