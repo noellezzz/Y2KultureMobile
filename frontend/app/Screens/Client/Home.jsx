@@ -1,4 +1,4 @@
-import { FlatList, Image, ScrollView, TextInput, View, TouchableOpacity } from 'react-native'
+import { FlatList, Image, ScrollView, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../styles/colors'
@@ -61,9 +61,9 @@ const Home = ({ navigation }) => {
   )
 
   const filteredProducts = products.filter(product => {
-    const matchesCategory = selectedCategory ? product.category === selectedCategory : true
-    const matchesPrice = product.price >= priceRange.min && product.price <= priceRange.max
-    return matchesCategory && matchesPrice
+    const filterCategory = selectedCategory ? product.category === selectedCategory : true
+    const filterPrice = product.price >= priceRange.min && product.price <= priceRange.max
+    return filterCategory && filterPrice
   })
 
   return (
@@ -164,7 +164,7 @@ const Home = ({ navigation }) => {
               value={priceRange.max}
               minimumTrackTintColor={colors.secondary}
               maximumTrackTintColor={colors.quinary}
-              onSlidingComplete={(value) => setPriceRange({ ...priceRange, max: value })}
+              onValueChange={(value) => setPriceRange({ ...priceRange, max: value })}
             />
           </View>
 
