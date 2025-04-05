@@ -3,7 +3,7 @@ const cloudinary = require("cloudinary");
 
 const uploadSingle = async ({ imageFile, request }) => {
   const result = await cloudinary.v2.uploader.upload(imageFile.path, {
-    folder: `HalalExpress`,
+    folder: `Y2Kulture`,
   });
 
   return {
@@ -18,7 +18,7 @@ const uploadMultiple = async ({ mediaFiles, request }) => {
     let image = mediaFiles[i].path;
 
     const result = await cloudinary.v2.uploader.upload(image, {
-      folder: `HalalExpress`,
+      folder: `Y2kulture`,
       resource_type: "auto",
     });
 
