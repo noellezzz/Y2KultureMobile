@@ -1,4 +1,4 @@
-import { FlatList, Image, ScrollView, TextInput, View } from 'react-native'
+import { FlatList, Image, ScrollView, TextInput, View, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../styles/colors'
@@ -30,6 +30,7 @@ import baseUrl from '../../../assets/common/baseUrl'
 const Home = ({ navigation }) => {
   const [user, setUser] = useState({})
   const [products, setProducts] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('')
 
   const getUser = async () => {
     try {
@@ -63,7 +64,9 @@ const Home = ({ navigation }) => {
     }, []),
   )
 
-  // console.log('Products:', products)
+  const filteredProducts = selectedCategory
+    ? products.filter(product => product.category === selectedCategory)
+    : products
 
   return (
     <SafeAreaView
@@ -97,49 +100,61 @@ const Home = ({ navigation }) => {
               placeholder="Search"
             />
           </View>
-          <View style={{ marginVertical: 5 }}>
-            <SectionTitle text="Categories" />
-            <View style={{ marginVertical: 3, flexDirection: 'row', gap: 5 }}>
-              <IconButton
-                text="Casual"
-                color={colors.quinary}
-                icon={<Ionicons name="shirt" size={20} color="black" />}
-              />
-              <IconButton
-                text="Formal"
-                color={colors.quaternary}
-                icon={
-                  <MaterialCommunityIcons
-                    name="shoe-formal"
-                    size={20}
-                    color="black"
-                  />
-                }
-              />
-            </View>
-            <View style={{ marginVertical: 3, flexDirection: 'row', gap: 5 }}>
-              <IconButton
-                text="Sports"
-                color={colors.senary}
-                icon={
-                  <MaterialIcons
-                    name="sports-baseball"
-                    size={24}
-                    color="black"
-                  />
-                }
-              />
-              <IconButton
-                text="Others"
-                color={colors.septary}
-                icon={<FontAwesome5 name="vest" size={20} color="black" />}
-              />
-            </View>
+        <View style={{ marginVertical: 5 }}>
+          <SectionTitle text="Categories" />
+          <View style={{ marginVertical: 3, flexDirection: 'row', gap: 5 }}>
+            <IconButton
+              text="Casual"
+              color={selectedCategory === 'Casual' ? colors.secondary : colors.quinary}
+              onPress={() => {
+                setSelectedCategory(selectedCategory === 'Casual' ? '' : 'Casual') 
+              }}
+              icon={<Ionicons name="shirt" size={20} color="black" />}
+            />
+            <IconButton
+              text="Formal"
+              color={selectedCategory === 'Formal' ? colors.secondary : colors.quaternary}
+              onPress={() => {
+                setSelectedCategory(selectedCategory === 'Formal' ? '' : 'Formal')
+              }}
+              icon={
+                <MaterialCommunityIcons
+                  name="shoe-formal"
+                  size={20}
+                  color="black"
+                />
+              }
+            />
           </View>
+          <View style={{ marginVertical: 3, flexDirection: 'row', gap: 5 }}>
+            <IconButton
+              text="Sports"
+              color={selectedCategory === 'Sports' ? colors.secondary : colors.senary}
+              onPress={() => {
+                setSelectedCategory(selectedCategory === 'Sports' ? '' : 'Sports') 
+              }}
+              icon={
+                <MaterialIcons
+                  name="sports-baseball"
+                  size={24}
+                  color="black"
+                />
+              }
+            />
+            <IconButton
+              text="Others"
+              color={selectedCategory === 'Others' ? colors.secondary : colors.septary}
+              onPress={() => {
+                setSelectedCategory(selectedCategory === 'Others' ? '' : 'Others') 
+              }}
+              icon={<FontAwesome5 name="vest" size={20} color="black" />}
+            />
+          </View>
+        </View>
           <View style={{ marginVertical: 5 }}>
             <SectionTitle text="Collections" />
             <FlatList
-              data={products}
+              data={filteredProducts} 
               renderItem={({ item }) => (
                 <LgTile
                   text={item?.title}
@@ -166,7 +181,7 @@ const Home = ({ navigation }) => {
               }}
             >
               <FlatList
-                data={products}
+                data={filteredProducts} 
                 keyExtractor={item => item._id}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
