@@ -15,22 +15,18 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
 import ProductTile from '../../Components/Layout/ProductTile'
 import hanni from '../../../assets/images/hanni.jpg'
-import model2 from '../../../assets/images/model2.jpg'
-import model3 from '../../../assets/images/model3.jpg'
-import model4 from '../../../assets/images/model4.jpg'
-import model5 from '../../../assets/images/model5.jpg'
-import model6 from '../../../assets/images/model6.jpg'
 import Avatar from '../../Components/Layout/Avatar'
-import Products from '../../Data/Products'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useFocusEffect } from '@react-navigation/native'
 import baseUrl from '../../../assets/common/baseUrl'
+import Slider from '@react-native-community/slider'
 
 const Home = ({ navigation }) => {
   const [user, setUser] = useState({})
   const [products, setProducts] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('')
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 })
 
   const getUser = async () => {
     try {
@@ -64,9 +60,11 @@ const Home = ({ navigation }) => {
     }, []),
   )
 
-  const filteredProducts = selectedCategory
-    ? products.filter(product => product.category === selectedCategory)
-    : products
+  const filteredProducts = products.filter(product => {
+    const matchesCategory = selectedCategory ? product.category === selectedCategory : true
+    const matchesPrice = product.price >= priceRange.min && product.price <= priceRange.max
+    return matchesCategory && matchesPrice
+  })
 
   return (
     <SafeAreaView
@@ -100,61 +98,80 @@ const Home = ({ navigation }) => {
               placeholder="Search"
             />
           </View>
-        <View style={{ marginVertical: 5 }}>
-          <SectionTitle text="Categories" />
-          <View style={{ marginVertical: 3, flexDirection: 'row', gap: 5 }}>
-            <IconButton
-              text="Casual"
-              color={selectedCategory === 'Casual' ? colors.secondary : colors.quinary}
-              onPress={() => {
-                setSelectedCategory(selectedCategory === 'Casual' ? '' : 'Casual') 
-              }}
-              icon={<Ionicons name="shirt" size={20} color="black" />}
-            />
-            <IconButton
-              text="Formal"
-              color={selectedCategory === 'Formal' ? colors.secondary : colors.quaternary}
-              onPress={() => {
-                setSelectedCategory(selectedCategory === 'Formal' ? '' : 'Formal')
-              }}
-              icon={
-                <MaterialCommunityIcons
-                  name="shoe-formal"
-                  size={20}
-                  color="black"
-                />
-              }
+          <View style={{ marginVertical: 5 }}>
+            <SectionTitle text="Categories" />
+            <View style={{ marginVertical: 3, flexDirection: 'row', gap: 5 }}>
+              <IconButton
+                text="Casual"
+                color={selectedCategory === 'Casual' ? colors.secondary : colors.quinary}
+                onPress={() => {
+                  setSelectedCategory(selectedCategory === 'Casual' ? '' : 'Casual')
+                }}
+                icon={<Ionicons name="shirt" size={20} color="black" />}
+              />
+              <IconButton
+                text="Formal"
+                color={selectedCategory === 'Formal' ? colors.secondary : colors.quaternary}
+                onPress={() => {
+                  setSelectedCategory(selectedCategory === 'Formal' ? '' : 'Formal')
+                }}
+                icon={
+                  <MaterialCommunityIcons
+                    name="shoe-formal"
+                    size={20}
+                    color="black"
+                  />
+                }
+              />
+            </View>
+            <View style={{ marginVertical: 3, flexDirection: 'row', gap: 5 }}>
+              <IconButton
+                text="Sports"
+                color={selectedCategory === 'Sports' ? colors.secondary : colors.senary}
+                onPress={() => {
+                  setSelectedCategory(selectedCategory === 'Sports' ? '' : 'Sports')
+                }}
+                icon={
+                  <MaterialIcons
+                    name="sports-baseball"
+                    size={24}
+                    color="black"
+                  />
+                }
+              />
+              <IconButton
+                text="Others"
+                color={selectedCategory === 'Others' ? colors.secondary : colors.septary}
+                onPress={() => {
+                  setSelectedCategory(selectedCategory === 'Others' ? '' : 'Others')
+                }}
+                icon={<FontAwesome5 name="vest" size={20} color="black" />}
+              />
+            </View>
+          </View>
+
+          <View style={{ marginVertical: 10 }}>
+            <SectionTitle text="Price Range" />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text>Min: ₱{priceRange.min}</Text>
+              <Text>Max: ₱{priceRange.max}</Text>
+            </View>
+            <Slider
+              style={{ width: '100%', height: 40 }}
+              minimumValue={0}
+              maximumValue={1000}
+              step={10}
+              value={priceRange.max}
+              minimumTrackTintColor={colors.secondary}
+              maximumTrackTintColor={colors.quinary}
+              onSlidingComplete={(value) => setPriceRange({ ...priceRange, max: value })}
             />
           </View>
-          <View style={{ marginVertical: 3, flexDirection: 'row', gap: 5 }}>
-            <IconButton
-              text="Sports"
-              color={selectedCategory === 'Sports' ? colors.secondary : colors.senary}
-              onPress={() => {
-                setSelectedCategory(selectedCategory === 'Sports' ? '' : 'Sports') 
-              }}
-              icon={
-                <MaterialIcons
-                  name="sports-baseball"
-                  size={24}
-                  color="black"
-                />
-              }
-            />
-            <IconButton
-              text="Others"
-              color={selectedCategory === 'Others' ? colors.secondary : colors.septary}
-              onPress={() => {
-                setSelectedCategory(selectedCategory === 'Others' ? '' : 'Others') 
-              }}
-              icon={<FontAwesome5 name="vest" size={20} color="black" />}
-            />
-          </View>
-        </View>
+
           <View style={{ marginVertical: 5 }}>
             <SectionTitle text="Collections" />
             <FlatList
-              data={filteredProducts} 
+              data={filteredProducts}
               renderItem={({ item }) => (
                 <LgTile
                   text={item?.title}
@@ -181,7 +198,7 @@ const Home = ({ navigation }) => {
               }}
             >
               <FlatList
-                data={filteredProducts} 
+                data={filteredProducts}
                 keyExtractor={item => item._id}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
